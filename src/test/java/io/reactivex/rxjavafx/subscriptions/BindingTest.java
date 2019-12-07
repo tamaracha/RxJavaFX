@@ -24,6 +24,7 @@ import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.subjects.PublishSubject;
 import javafx.application.Platform;
 import javafx.beans.binding.Binding;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -35,6 +36,14 @@ import static org.junit.Assert.*;
 
 public final class BindingTest {
 
+
+	@BeforeClass
+	public static void initJFX() {
+		try {
+			javafx.application.Platform.startup(() ->{});
+		}catch(final IllegalStateException ignore) {
+		}
+	}
 
     @Test
     public void testCompositeBinding() {
