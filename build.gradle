@@ -11,6 +11,8 @@ group = GROUP
 java {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
+  withJavadocJar()
+  withSourcesJar()
 }
 
 javafx {
@@ -38,11 +40,6 @@ test {
     }
 }
 
-task sourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allSource
-}
-
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compileClasspath
@@ -54,18 +51,10 @@ javadoc {
     }
 }
 
-task packageJavadoc(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifact sourcesJar
-            artifact packageJavadoc
-
             groupId GROUP
             version VERSION_NAME
             artifactId ARTIFACT_ID
@@ -143,4 +132,3 @@ if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
     bintray.user = project.bintrayUser
     bintray.key = project.bintrayKey
 }
-
