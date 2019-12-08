@@ -3,23 +3,23 @@ buildscript {
         jcenter()
         mavenCentral()
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
     }
 
     dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.5.2"
-        classpath "org.javamodularity:moduleplugin:1.5.0"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.5.2'
+        classpath 'org.javamodularity:moduleplugin:1.5.0'
     }
 }
 
-apply plugin: "java"
-apply plugin: "org.javamodularity.moduleplugin"
-apply plugin: "maven"
-apply plugin: "maven-publish"
-apply plugin: "com.jfrog.bintray"
-apply plugin: "com.jfrog.artifactory"
+apply plugin: 'java'
+apply plugin: 'org.javamodularity.moduleplugin'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.jfrog.artifactory'
 
 group = GROUP
 sourceCompatibility = JavaVersion.VERSION_11
@@ -72,7 +72,7 @@ javadoc {
     options {
         setMemberLevel JavadocMemberLevel.PUBLIC
         setAuthor true
-//        links "https://docs.oracle.com/javase/8/docs/api/" // causes build to fail on openjdk-11.0.2+9
+//        links 'https://docs.oracle.com/javase/8/docs/api/' // causes build to fail on openjdk-11.0.2+9
     }
 }
 
@@ -106,21 +106,21 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = "thomasnield"
-                        name = "Thomas Nield"
-                        email = "thomasnield@live.com"
-                        organization = "ReactiveX"
-                        organizationUrl = "http://reactivex.io/"
+                        id = 'thomasnield'
+                        name = 'Thomas Nield'
+                        email = 'thomasnield@live.com'
+                        organization = 'ReactiveX'
+                        organizationUrl = 'http://reactivex.io/'
                     }
                 }
                 scm {
                     connection = POM_SCM_CONNECTION
                     developerConnection = POM_SCM_DEV_CONNECTION
-                    url = "scm:git:git@github.com:ReactiveX/RxJavaFX.git"
+                    url = 'scm:git:git@github.com:ReactiveX/RxJavaFX.git'
                 }
                 issueManagement {
-                    system = "github"
-                    url = "https://github.com/ReactiveX/RxJavaFX/issues"
+                    system = 'github'
+                    url = 'https://github.com/ReactiveX/RxJavaFX/issues'
                 }
             }
         }
@@ -138,7 +138,7 @@ bintray {
         labels = ['rxjava', 'reactivex']
         websiteUrl = 'https://github.com/ReactiveX/RxJavaFX/'
         issueTrackerUrl = 'https://github.com/ReactiveX/RxJavaFX/issues'
-        vcsUrl = "https://github.com/ReactiveX/RxJavaFX.git"
+        vcsUrl = 'https://github.com/ReactiveX/RxJavaFX.git'
         
         version {
             name = VERSION_NAME
@@ -154,7 +154,7 @@ bintray {
                 name = POM_NAME
                 description = POM_DESCRIPTION
 
-                close = "1"
+                close = '1'
             }
         }
 
