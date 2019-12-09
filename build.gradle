@@ -1,14 +1,33 @@
 plugins {
+  // determine version from git tags, follow semver spec
+  id 'org.ajoberstar.reckon' version '0.12.0'
+  // differentiate transient from implementation dependencies
   id 'java-library'
+  // manage JavaFx modules
   id 'org.openjfx.javafxplugin' version '0.0.8'
+  // publishing plugins
   id 'maven-publish'
   id 'com.jfrog.bintray' version '1.8.4'
   id 'com.jfrog.artifactory' version '4.11.0'
 }
 
+group = 'io.reactivex.rxjava2'
+description = 'RxJava extensions for JavaFX'
+
+ext {
+  vcsUrl = "https://github.com/${github_org}/${github_repo}"
+  homepage = vcsUrl
+}
+
+reckon {
+  scopeFromProp()
+  stageFromProp('beta', 'rc', 'final')
+}
+
 java {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
+  // tasks and publication artifacts for sources and javadoc
   withJavadocJar()
   withSourcesJar()
 }
@@ -16,10 +35,11 @@ java {
 javafx {
   modules = [ 'javafx.controls', 'javafx.graphics' ]
   version = '11'
+  configuration = 'compileOnly'
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -45,22 +65,14 @@ javadoc {
     }
 }
 
-boolean isReleaseBuild = gradle.startParameter.taskNames.contains('bintrayUpload')
-version = isReleaseBuild ? VERSION_NAME : "$VERSION_NAME-SNAPSHOT"
-logger.info("RxJavaFX using version=$project.version")
-
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        rxjavafx(MavenPublication) {
             from components.java
-            groupId GROUP
-            version VERSION_NAME
-            artifactId ARTIFACT_ID
-
             pom {
-                name = POM_NAME
-                description = POM_DESCRIPTION
-                url = POM_URL
+                name = pkg_name
+                description = description
+                url = homepage
 
                 licenses {
                     license {
@@ -79,13 +91,13 @@ publishing {
                     }
                 }
                 scm {
-                    connection = POM_SCM_CONNECTION
-                    developerConnection = POM_SCM_DEV_CONNECTION
-                    url = 'scm:git:git@github.com:ReactiveX/RxJavaFX.git'
+                  connection = "scm:git:git://github.com/${github_org}/${github_repo}.git"
+                  developerConnection = "scm:git:ssh://github.com/${github_org}/${github_repo}.git"
+                  url = vcsUrl
                 }
                 issueManagement {
                     system = 'github'
-                    url = 'https://github.com/ReactiveX/RxJavaFX/issues'
+                    url = "${vcsUrl}/issues"
                 }
             }
         }
@@ -93,22 +105,23 @@ publishing {
 }
 
 bintray {
-    publications = ['mavenJava']
-
+  user = System.getenv('bintray_user')
+  key = System.getenv('bintray_api_key')
+    publications = ['rxjavafx']
     publish = true
     pkg {
-        repo = 'RxJava'
-        name = 'RxJavaFX'
-        userOrg = 'reactivex'
+      userOrg = bintray_org
+        repo = bintray_repo
+        name = pkg_name
+        desc = project.description
         licenses = ['Apache-2.0']
         labels = ['rxjava', 'reactivex']
-        websiteUrl = 'https://github.com/ReactiveX/RxJavaFX/'
-        issueTrackerUrl = 'https://github.com/ReactiveX/RxJavaFX/issues'
-        vcsUrl = 'https://github.com/ReactiveX/RxJavaFX.git'
-        
+        vcsUrl = vcsUrl
+        issueTrackerUrl = "${vcsUrl}/issues"
+        websiteUrl = homepage
         version {
-            name = VERSION_NAME
-            vcsTag = VERSION_NAME
+            name = "$version"
+            vcsTag = "$version"
             gpg {
                 sign = true
             }
@@ -117,17 +130,12 @@ bintray {
                 user = rootProject.sonatypeUsername
                 password = rootProject.sonatypePassword
 
-                name = POM_NAME
-                description = POM_DESCRIPTION
+                name = pkg_name
+                description = description
 
                 close = '1'
             }
         }
 
     }
-}
-
-if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    bintray.user = project.bintrayUser
-    bintray.key = project.bintrayKey
 }
