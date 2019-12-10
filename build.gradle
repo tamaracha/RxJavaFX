@@ -24,6 +24,10 @@ reckon {
   stageFromProp('beta', 'rc', 'final')
 }
 
+configurations {
+    testImplementation.extendsFrom compileOnly
+}
+
 java {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
@@ -44,11 +48,20 @@ repositories {
 
 dependencies {
     api 'io.reactivex.rxjava2:rxjava:2.2.4'
-    testImplementation 'junit:junit-dep:4.11'
+    def junit4Version   = '4.12'
+    def junitBomVersion = '5.5.2'
+    testImplementation(platform("org.junit:junit-bom:$junitBomVersion"))
+    testImplementation("junit:junit:${junit4Version}")
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine') {
+      because 'allows JUnit 3 and JUnit 4 tests to run'
+    }
     testImplementation 'org.mockito:mockito-core:3.2.0'
 }
 
 test {
+	useJUnitPlatform {
+    includeEngines('junit-vintage')
+  }
     moduleOptions {
         runOnClasspath = true
     }
