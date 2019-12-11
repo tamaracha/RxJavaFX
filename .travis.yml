@@ -3,7 +3,7 @@ install: true
 os: linux
 dist: xenial
 jdk: openjdk11
-if: tag IS present
+# if: tag IS present
 
 # Setup xvfb for tests requiring a gui
 services:
@@ -11,6 +11,8 @@ services:
 
 # build phases
 script:
+  - git --no-pager tag -l '3.0.0*'
+  - ./gradlew check --stacktrace --info
   - ./gradle/buildViaTravis.sh
 
 # cache between builds
