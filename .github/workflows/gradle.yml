@@ -11,4 +11,4 @@ jobs:
         java-version: 11
     - run: sudo apt-get install xvfb
     - name: Build with Gradle
-      run: ./gradlew build
+      run: xvfb-run ./gradlew build
